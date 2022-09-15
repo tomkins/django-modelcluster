@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from modelcluster.models import get_all_child_relations
 
-from tests.models import Band, BandMember, Article, Author, Category
+from tests.models import Album, Article, Author, Band, BandMember, Category, Song
 
 
 # Get child relations
@@ -77,3 +77,18 @@ class TestCopyCluster(TestCase):
         # ParentalManyToManyField creates an invisible through table to the referenced objects
         # We don't need to care about this though since this table is usually plain
         self.assertEqual(child_object_map, {})
+
+    def test_copy_cluster_recursive(self):
+        old_album = Album(name="Please Please Me", songs=[
+            Song(name="I Saw Her Standing There"),
+            Song(name="Love Me Do"),
+        ])
+
+        beatles = Band(name="The Beatles", albums=[old_album])
+        beatles.save()
+
+        beatles_clone, child_object_map = beatles.copy_cluster()
+        new_album = beatles_clone.albums.get(name="Please Please Me")
+        new_song_1 = new_album.songs.get(name="I Saw Her Standing There")
+        old_song_1 = old_album.songs.get(name="I Saw Her Standing There")
+        self.assertNotEqual(old_song_1.pk, new_song_1.pk)

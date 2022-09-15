@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from modelcluster.models import get_all_child_relations
 
-from tests.models import Album, Band, BandMember
+from tests.models import Album, Band, BandMember, Song
 
 # Get child relations
 band_child_rels_by_model = {
@@ -246,6 +246,23 @@ class TestCopyChildRelations(TestCase):
             (band_members_rel, paul.pk): new_paul,
         })
 
+    def test_copy_child_relation_recursive(self):
+        old_album = Album(name="Please Please Me", songs=[
+            Song(name="I Saw Her Standing There"),
+            Song(name="Love Me Do"),
+        ])
+        self.beatles.albums = [old_album]
+        self.beatles.save()
+
+        beatles_clone = Band(name="The Beatles 2020 comeback")
+        self.beatles.copy_child_relation('albums', beatles_clone)
+        beatles_clone.save()
+
+        new_album = beatles_clone.albums.get(name="Please Please Me")
+        new_song_1 = new_album.songs.get(name="I Saw Her Standing There")
+        old_song_1 = old_album.songs.get(name="I Saw Her Standing There")
+        self.assertNotEqual(old_song_1.pk, new_song_1.pk)
+
 
 class TestCopyAllChildRelations(TestCase):
     def setUp(self):
@@ -425,3 +442,20 @@ class TestCopyAllChildRelations(TestCase):
             (band_members_rel, None): [new_john, new_paul],
             (band_albums_rel, None): [new_album_1, new_album_2, new_album_3],
         })
+
+    def test_copy_all_child_relations_recursive(self):
+        old_album = self.beatles.albums.get(name="Please Please Me")
+        old_album.songs = [
+            Song(name="I Saw Her Standing There"),
+            Song(name="Love Me Do"),
+        ]
+        self.beatles.save()
+
+        beatles_clone = Band(name="The Beatles 2020 comeback")
+        self.beatles.copy_all_child_relations(beatles_clone)
+        beatles_clone.save()
+
+        new_album = beatles_clone.albums.get(name="Please Please Me")
+        new_song_1 = new_album.songs.get(name="I Saw Her Standing There")
+        old_song_1 = old_album.songs.get(name="I Saw Her Standing There")
+        self.assertNotEqual(old_song_1.pk, new_song_1.pk)

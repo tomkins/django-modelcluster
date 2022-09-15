@@ -1,6 +1,10 @@
 Changelog
 =========
 
+6.5 (xx.xx.xxxx)
+~~~~~~~~~~~~~~~~
+* Fix: Recursively copy child relations on `copy_cluster`, `copy_all_child_relations` and `copy_child_relation` (Jakub Musil, Matt Westcott)
+
 6.4.1 (04.12.2025)
 ~~~~~~~~~~~~~~~~~~
 * Handle `get_prefetch_queryset` deprecation, for Django 6.0 support (Sage Abdullah)
