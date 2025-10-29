@@ -4,6 +4,7 @@ Changelog
 6.5 (xx.xx.xxxx)
 ~~~~~~~~~~~~~~~~
 * Fix: Recursively copy child relations on `copy_cluster`, `copy_all_child_relations` and `copy_child_relation` (Jakub Musil, Matt Westcott)
+* Fix: Fix behavior of ParentalManyToManyFields and prefetch_related() supplied with a lookup queryset (Bernhard Bliem)
 
 6.4.1 (04.12.2025)
 ~~~~~~~~~~~~~~~~~~
