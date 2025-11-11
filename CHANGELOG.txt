@@ -3,6 +3,7 @@ Changelog
 
 6.5 (xx.xx.xxxx)
 ~~~~~~~~~~~~~~~~
+* Implement `none` method on FakeQuerySet (Victor Miti)
 * Fix: Recursively copy child relations on `copy_cluster`, `copy_all_child_relations` and `copy_child_relation` (Jakub Musil, Matt Westcott)
 * Fix: Fix behavior of ParentalManyToManyFields and prefetch_related() supplied with a lookup queryset (Bernhard Bliem)
 
